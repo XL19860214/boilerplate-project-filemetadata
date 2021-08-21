@@ -1,13 +1,15 @@
 var express = require('express');
 var cors = require('cors');
 require('dotenv').config();
-const fileUpload = require('express-fileupload');
+// const fileUpload = require('express-fileupload');
+const multer  = require('multer')
+const upload = multer()
 
 var app = express();
 
-app.use(fileUpload({
-    createParentPath: true
-}));
+// app.use(fileUpload({
+//     createParentPath: true
+// }));
 
 app.use(cors());
 app.use('/public', express.static(process.cwd() + '/public'));
@@ -19,10 +21,10 @@ app.get('/', function (req, res) {
 // ===============================================
 // POST '/api/fileanalyse'
 
-app.post('/api/fileanalyse', (req, res) => {
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
   // console.log(`req`, req); // DEBUG
   // console.log(`req.files`, req.files); // DEBUG
-  const { name, size, mimetype: type } = req.files.upfile;
+  const { originalname: name, size, mimetype: type } = req.file;
   res.json({
     name,
     type,
